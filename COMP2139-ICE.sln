@@ -1,0 +1,16 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "COMP2139-ICE", "COMP2139-ICE\COMP2139-ICE.csproj", "{B4EF8634-E0C0-434B-A995-E8CE25E2B377}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{B4EF8634-E0C0-434B-A995-E8CE25E2B377}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B4EF8634-E0C0-434B-A995-E8CE25E2B377}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B4EF8634-E0C0-434B-A995-E8CE25E2B377}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B4EF8634-E0C0-434B-A995-E8CE25E2B377}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
