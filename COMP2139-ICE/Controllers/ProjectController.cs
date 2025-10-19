@@ -35,20 +35,38 @@ public class ProjectController : Controller
         return View();
     }
 
+    
     [HttpPost]
     [ValidateAntiForgeryToken]
     public IActionResult Create(Project project)
 
     {
-
         if (ModelState.IsValid)
+
         {
-            _context.Add(project);
+        // Convert to UTC before saving
+
+            project.StartDate = ToUtc(project.StartDate);
+            project.EndDate = ToUtc(project.EndDate);
+            _context.Projects.Add(project);
             _context.SaveChanges();
             return RedirectToAction("Index");
         }
-
+        
         return View(project);
+    }
+    
+    private DateTime ToUtc(DateTime input)
+
+    {
+        if (input.Kind == DateTimeKind.Utc)
+            return input;
+        if (input.Kind == DateTimeKind.Unspecified)
+
+            return DateTime.SpecifyKind(input, DateTimeKind.Utc); // assume local is already UTC
+
+        return input.ToUniversalTime();
+
     }
 
     [HttpGet]

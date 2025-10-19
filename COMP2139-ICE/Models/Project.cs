@@ -46,5 +46,7 @@ namespace COMP2139_ICE.Models;
         /// </summary>
        
         public string? Status { get; set; }
-        
-}
+
+        public List<ProjectTask>? Tasks { get; set; } = new();
+
+    }

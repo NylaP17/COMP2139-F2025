@@ -13,10 +13,6 @@
 
 <h2>Projects</h2> 
 
-// Lab4 - Part5 - #1 
-
-//"Create" 
-
 <a asp-action="Create" class="btn btn-primary">Create New Project</a> <!--Lab4 - Part5 - #1 --> 
 
 @if (Model.Any())   // to determine if there are any projects to display 
@@ -64,13 +60,15 @@
                 <td><!--Lab4 - Part5 - #1 --> 
 
                     <!--"Details"-->    
-
                     <a asp-action="Details" asp-route-id="@project.ProjectId" class="btn btn-info">Details</a> 
 
                     <!--Delete--> 
-
                     <a asp-action="Delete" asp-route-id="@project.ProjectId" class="btn btn-danger">Delete</a> 
 
+                    <!--Edit--> 
+                    <a asp-action="Edit" asp-route-id="@project.ProjectId" class="btn btn-danger">Edit</a>
+                    
+                    <a asp-controller="ProjectTask" asp-action="Index" asp-route-projectId="@project.ProjectId" class="btn btn-warning">View Tasks</a>
                 </td> 
 
                 <!-- Render other project properties as needed --> 
