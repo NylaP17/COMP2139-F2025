@@ -1,3 +1,4 @@
+using COMP2139_ICE.Areas.ProjectManagement.Models;
 using COMP2139_ICE.Models;
 using Microsoft.EntityFrameworkCore;
 
