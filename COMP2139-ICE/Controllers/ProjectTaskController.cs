@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 
 namespace COMP2139_ICE.Controllers;
-
+[Route("ProjectTask")]
 public class ProjectTaskController : Controller
 {
 
@@ -20,7 +20,7 @@ public class ProjectTaskController : Controller
 
     } 
 
-    [HttpGet] 
+    [HttpGet("Index/{projectId:int}")] 
 
     public IActionResult Index(int projectId) 
 
@@ -42,7 +42,7 @@ public class ProjectTaskController : Controller
 
 
 
-    [HttpGet] 
+    [HttpGet("Details/{id:int}")] 
 
     public IActionResult Details(int id) 
 
@@ -72,7 +72,7 @@ public class ProjectTaskController : Controller
 
  
 
-    [HttpGet] 
+    [HttpGet("Create/{projectId:int}")] 
 
     public IActionResult Create(int projectId) 
 
@@ -112,7 +112,7 @@ public class ProjectTaskController : Controller
 
  
 
-    [HttpPost] 
+    [HttpPost("Create/{projectId:int}")] 
 
     [ValidateAntiForgeryToken] 
 
@@ -146,7 +146,7 @@ public class ProjectTaskController : Controller
 
  
 
-    [HttpGet] 
+    [HttpGet("Edit/{id:int}")] 
 
     public IActionResult Edit(int id) 
 
@@ -178,7 +178,7 @@ public class ProjectTaskController : Controller
 
  
 
-    [HttpPost] 
+    [HttpPost("Edit/{id:int}")] 
 
     [ValidateAntiForgeryToken] 
 
@@ -218,7 +218,7 @@ public class ProjectTaskController : Controller
 
  
 
-    [HttpGet] 
+    [HttpGet("Delete/{id:int}")] 
 
     public IActionResult Delete(int id) 
 
@@ -275,5 +275,49 @@ public class ProjectTaskController : Controller
         return NotFound(); 
 
     } 
+    
+    // Lab 6 - Search ProjectTasks
+// GET: ProjectTasks/Search/{projectId?}/{searchString?}
+    [HttpGet("Search")]
+    public async Task<IActionResult> Search(int? projectId, string searchString)
+    {
+        // Start with all tasks as an IQueryable query (deferred execution)
+        var taskQuery = _context.ProjectTask.AsQueryable();
+
+        // Track whether a search was performed
+        bool searchPerformed = !string.IsNullOrWhiteSpace(searchString);
+
+        // If a projectId is provided, filter by project
+        if (projectId.HasValue)
+        {
+            taskQuery = taskQuery.Where(t => t.ProjectId == projectId.Value);
+        }
+
+        // ❗ FIXED: Apply search filter when searchString is provided
+        if (searchPerformed)
+        {
+            searchString = searchString.ToLower(); // Case-insensitive search
+
+            // Ensure null-safe search on nullable Description
+            taskQuery = taskQuery.Where(t =>
+                t.Title.ToLower().Contains(searchString) ||
+                (t.Description != null && t.Description.ToLower().Contains(searchString))
+            );
+        }
+
+        // ❗ WHY ASYNC? ❗
+        // The database query is executed asynchronously using `ToListAsync()`
+        // This prevents blocking the main thread while waiting for the result.
+        var tasks = await taskQuery.ToListAsync();
+
+        // Pass search metadata to the view for UI updates
+        ViewBag.ProjectId = projectId;
+        ViewData["SearchPerformed"] = searchPerformed;
+        ViewData["SearchString"] = searchString;
+
+        // Reuse Index view to display filtered results
+        return View("Index", tasks);
+    }
+    
     
 }
