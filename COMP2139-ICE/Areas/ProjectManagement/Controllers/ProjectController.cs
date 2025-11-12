@@ -16,7 +16,7 @@ public class ProjectController : Controller
     }
 
     [HttpGet("")]
-    public IActionResult Index()
+    public async Task<IActionResult> Index()
 
     {
         /*
@@ -26,7 +26,7 @@ public class ProjectController : Controller
             // Feel free to add more projects here
         };
         */
-        var projects = _context.Projects.ToList();
+        var projects = await _context.Projects.ToListAsync();
         return View(projects);
     }
 
@@ -39,7 +39,7 @@ public class ProjectController : Controller
     
     [HttpPost("Create")]
     [ValidateAntiForgeryToken]
-    public IActionResult Create(Project project)
+    public async Task<IActionResult> Create(Project project)
 
     {
         if (ModelState.IsValid)
@@ -49,8 +49,9 @@ public class ProjectController : Controller
 
             project.StartDate = ToUtc(project.StartDate);
             project.EndDate = ToUtc(project.EndDate);
-            _context.Projects.Add(project);
-            _context.SaveChanges();
+            
+            await _context.Projects.AddAsync(project);
+            await _context.SaveChangesAsync();
             return RedirectToAction("Index");
         }
         
@@ -71,14 +72,14 @@ public class ProjectController : Controller
     }
 
     [HttpGet("Details/{id:int}")]
-    public IActionResult Details(int id)
+    public async Task<IActionResult> Details(int id)
 
     {
         /*
         var project = new Project {ProjectId = id, Name = "Project " + id, Description = "Details of Project " + id};
 
         */
-        var project = _context.Projects.FirstOrDefault(p => p.ProjectId == id);
+        var project = await _context.Projects.FirstOrDefaultAsync(p => p.ProjectId == id);
         if (project == null)
         {
             return NotFound();
@@ -88,9 +89,9 @@ public class ProjectController : Controller
     }
 
     [HttpGet("Edit/{id:int}")]
-    public IActionResult Edit(int id)
+    public async Task<IActionResult> Edit(int id)
     {
-        var project = _context.Projects.Find(id);
+        var project = await _context.Projects.FindAsync(id);
         if (project == null)
         {
             return NotFound();
@@ -102,7 +103,7 @@ public class ProjectController : Controller
     //Lab4 - Part3 - #2 
     [HttpPost("Edit/{id:int}")]
     [ValidateAntiForgeryToken]
-    public IActionResult Edit(int id, [Bind("ProjectId", "Name", "Description")] Project project)
+    public async Task<IActionResult> Edit(int id, [Bind("ProjectId", "Name", "Description")] Project project)
 
     {
 
@@ -117,14 +118,14 @@ public class ProjectController : Controller
             try
             {
                 _context.Projects.Update(project);
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
 
             }
 
             catch (DbUpdateConcurrencyException)
             {
 
-                if (!ProjectExists(project.ProjectId))
+                if (!await ProjectExists(project.ProjectId))
 
                 {
                     return NotFound();
@@ -143,19 +144,19 @@ public class ProjectController : Controller
     }
 
 
-    private bool ProjectExists(int id)
+    private async Task<bool> ProjectExists(int id)
 
     {
 
-        return _context.Projects.Any(e => e.ProjectId == id);
+        return await _context.Projects.AnyAsync(e => e.ProjectId == id);
 
     }
 
     [HttpGet("Delete/{id:int}")]
-    public IActionResult Delete(int id)
+    public async Task<IActionResult> Delete(int id)
     {
 
-        var project = _context.Projects.FirstOrDefault(p => p.ProjectId == id);
+        var project =  await _context.Projects.FirstOrDefaultAsync(p => p.ProjectId == id);
         if (project == null)
         {
             return NotFound();
@@ -166,18 +167,18 @@ public class ProjectController : Controller
 
     [HttpPost, ActionName("DeleteConfirmed/{id:int}")]
     [ValidateAntiForgeryToken]
-    public IActionResult DeleteConfirmed(int id)
+    public async Task<IActionResult> DeleteConfirmed(int id)
     {
 
-        var project = _context.Projects.Find(id);
+        var project = await _context.Projects.FindAsync(id);
         if (project != null)
         {
             _context.Projects.Remove(project);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
             return RedirectToAction("Index");
         }
 
-        return View(project);
+        return NotFound();
     }
     
     
